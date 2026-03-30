@@ -166,7 +166,7 @@ void CanvacDrawRect(Canvac canv, int rx, int ry, int32_t rw, int32_t rh, int32_t
 
 uint32_t pix_buffer[WINDOW_WIDTH*WINDOW_HEIGHT];
 
-
+// TODO: parse the obj-file in run time and display
 static const vec3f panger_points[] = {
     (vec3f){ -0.086914,  0.277547,  0.400041},
     (vec3f){ -0.069555,  0.329698,  0.376422},
