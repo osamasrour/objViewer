@@ -1,1 +1,1 @@
-call gcc -ggdb -Wall -Wextra -pedantic main.c -I src\include -L src\lib -lSDL2 -lSDL2main -lmingw32 -lsetupapi -lole32 -limm32 -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lshell32 -lversion -limm32 -loleaut32 -lwinmm -o main.exe
+call gcc -ggdb -Wall -Wextra main.c -I src\include -L src\lib -lSDL2 -lSDL2main -lmingw32 -lsetupapi -lole32 -limm32 -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lshell32 -lversion -limm32 -loleaut32 -lwinmm -o main.exe
