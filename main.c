@@ -22,6 +22,7 @@
 #define MAX(n1, n2) (n1 >= n2 ? n1 : n2)
 #define UNIMPLEMENTED(msg) {fprintf(stderr, msg); exit(1);}
 #define FPS 60
+#define PANGER_PAD 0.07
 
 
 typedef struct Canvac{
@@ -61,7 +62,7 @@ vec2i denormalize(vec2f vec){
 }
 
 vec2f project2d(vec3f vec){
-    float z = (vec.z + 1);
+    float z = (vec.z + 1) + PANGER_PAD;
     return (vec2f){
         .x = vec.x / z,
         .y = vec.y / z
@@ -1149,7 +1150,6 @@ int main(void)
 
     int quit = 0;
     SDL_Event event;
-    // float i = 1;
 
     double angle = 0;
     int thickness = 2;
