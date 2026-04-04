@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <errno.h>
 #include "stb_ds.h"
 
 #define SV_fmt "%.*s"
@@ -41,10 +42,13 @@ void sv_chop_left(SV* sv, size_t n);
 int isSeprateNum(int c);
 SV sv_chop_by_delmit(SV *sv, const char delmt);
 SV sv_chop_by_type(SV *sv, int(*istype)(int c));
+int isFloat(SV obj);
 #define DEBUG 0
 void parse_obj(SV obj, token** tokenArr);
 #define KIND_NAME_CAP 32
 void getTokenKindName(tokenKind kind, char buff[KIND_NAME_CAP]);
+int toInt(char* strNum); // NOTE: the function excepcts null-termenated string
+float toFloat(char* strNum); // NOTE: the function excepcts null-termenated string
 
 
 

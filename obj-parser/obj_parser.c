@@ -71,6 +71,8 @@ SV sv_chop_by_delmit(SV *sv, const char delmit){
         return res;
     }
 
+    return *sv;
+
 
 }
 
@@ -91,6 +93,7 @@ SV sv_chop_by_type(SV *sv, int (*istype)(int c)){
         return res;
     }
 
+    return *sv;
 }
 
 void parse_obj(SV obj, token** tokenArr){
@@ -249,4 +252,36 @@ void getTokenKindName(tokenKind kind, char buff[KIND_NAME_CAP]){
         memcpy(buff, "(FORWARDSLASH)",strlen("(FORWARDSLASH)"));
     }break;
     }
+}
+
+int toInt(char* strNum){
+    char* endptr;
+
+    int i = (int)strtof(strNum, &endptr);
+
+    if(strNum == endptr){
+        perror("No digits were found:");
+        assert(0);
+    }
+    else if(*endptr != '\0'){
+        perror("Farther char after number");
+        assert(0);
+    }
+    return i;
+}
+
+float toFloat(char* strNum){
+    char* endptr;
+
+    float i = strtof(strNum, &endptr);
+
+    if(strNum == endptr){
+        perror("No digits were found:");
+        assert(0);
+    }
+    else if(*endptr != '\0'){
+        perror("Farther char after number");
+        assert(0);
+    }
+    return i;
 }
