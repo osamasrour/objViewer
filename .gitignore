@@ -1,3 +1,5 @@
 *.exe
 src
 panger.h
+ascii.c
+tokenz.txt
