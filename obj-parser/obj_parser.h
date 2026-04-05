@@ -18,6 +18,14 @@ typedef struct SV{
 }SV;
 
 
+typedef struct vec3i{
+    int x, y, z;
+}vec3i;
+
+typedef struct vec3f{
+    float x, y, z;
+}vec3f;
+
 
 typedef enum tokenKind{
     TK_INVALID,
@@ -36,6 +44,12 @@ typedef struct tt{
     int col;
 }token;
 
+typedef struct obj{
+    vec3f* verteces;
+    vec3i* faces;
+}obj;
+
+
 SV sv(char* stringLitrel);
 int readFile(const char* file_path, char** buffer, long *buffer_size);
 void sv_chop_left(SV* sv, size_t n);
@@ -48,8 +62,8 @@ void parse_obj(SV obj, token** tokenArr);
 #define KIND_NAME_CAP 32
 void getTokenKindName(tokenKind kind, char buff[KIND_NAME_CAP]);
 int toInt(char* strNum); // NOTE: the function excepcts null-termenated string
-float toFloat(char* strNum); // NOTE: the function excepcts null-termenated string
-
+float toFloat(char* strNum, size_t len);
+void getObjData(obj* model, token* tkArr);
 
 
 

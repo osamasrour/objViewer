@@ -270,12 +270,14 @@ int toInt(char* strNum){
     return i;
 }
 
-float toFloat(char* strNum){
+float toFloat(char* strNum, size_t len){
     char* endptr;
+    char tempNum[len+1];
+    memcpy(tempNum, strNum, len);
+    tempNum[len] = '\0';
+    float i = strtof(tempNum, &endptr);
 
-    float i = strtof(strNum, &endptr);
-
-    if(strNum == endptr){
+    if(tempNum == endptr){
         perror("No digits were found:");
         assert(0);
     }
@@ -285,3 +287,28 @@ float toFloat(char* strNum){
     }
     return i;
 }
+
+void getObjData(obj* model, token* tkArr){
+    size_t n = arrlenu(tkArr);
+    assert(n > 0);
+    model->verteces = NULL;
+    model->faces = NULL;
+
+    for(size_t i = 0; i < n; i++){
+        if (strncmp(tkArr[i].data.buffer, "v", 1) == 0
+         && tkArr[i].data.count == 1){
+            vec3f vertex = {0};
+            assert(tkArr[i+1].kind == TK_FLOAT);
+            assert(tkArr[i+2].kind == TK_FLOAT);
+            assert(tkArr[i+3].kind == TK_FLOAT);
+            vertex.x = toFloat(tkArr[i+1].data.buffer, tkArr[i+1].data.count);
+            vertex.y = toFloat(tkArr[i+2].data.buffer, tkArr[i+2].data.count);
+            vertex.z = toFloat(tkArr[i+3].data.buffer, tkArr[i+3].data.count);
+            arrput(model->verteces, vertex);
+        }
+    }
+}
+
+
+
+

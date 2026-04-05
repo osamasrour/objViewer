@@ -1,1 +1,1 @@
-gcc main.c -ggdb obj_parser.c -o main.exe
+gcc -ggdb -Wall main.c  obj_parser.c -o main.exe
