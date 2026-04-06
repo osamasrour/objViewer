@@ -4,7 +4,7 @@
 
 int main(int argc, char const *argv[])
 {
-    const char* file_path = "penger-obj-main\\penger\\penger.obj";
+    const char* file_path = "tank2\\IS8.obj";
     long buffer_size;
     char* buffer;
     if (readFile(file_path, &buffer, &buffer_size) != 0){
@@ -25,10 +25,14 @@ int main(int argc, char const *argv[])
 
     obj model = {0};
     getObjData(&model, tkArr);
-    for(size_t i = 0; i < arrlenu(model.verteces); i++){
-        vec3f v = model.verteces[i];
-        printf("%f, %f, %f\n", v.x, v.y, v.z);
-    }
+    // for(size_t i = 0; i < arrlenu(model.verteces); i++){
+    //     vec3f v = model.verteces[i];
+    //     printf("%f, %f, %f\n", v.x, v.y, v.z);
+    // }
+    // for(size_t i = 0; i < arrlenu(model.faces); i++){
+    //     vec3i v = model.faces[i];
+    //     printf("%d, %d, %d\n", v.x, v.y, v.z);
+    // }
 
     return 0;
 }

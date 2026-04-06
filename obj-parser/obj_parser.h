@@ -61,7 +61,7 @@ int isFloat(SV obj);
 void parse_obj(SV obj, token** tokenArr);
 #define KIND_NAME_CAP 32
 void getTokenKindName(tokenKind kind, char buff[KIND_NAME_CAP]);
-int toInt(char* strNum); // NOTE: the function excepcts null-termenated string
+int toInt(char* strNum, size_t len);
 float toFloat(char* strNum, size_t len);
 void getObjData(obj* model, token* tkArr);
 

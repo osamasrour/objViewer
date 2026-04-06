@@ -254,12 +254,14 @@ void getTokenKindName(tokenKind kind, char buff[KIND_NAME_CAP]){
     }
 }
 
-int toInt(char* strNum){
+int toInt(char* strNum, size_t len){
     char* endptr;
+    char tempNum[len+1];
+    memcpy(tempNum, strNum, len);
+    tempNum[len] = '\0';
+    int i = (int)strtof(tempNum, &endptr);
 
-    int i = (int)strtof(strNum, &endptr);
-
-    if(strNum == endptr){
+    if(tempNum == endptr){
         perror("No digits were found:");
         assert(0);
     }
@@ -293,6 +295,9 @@ void getObjData(obj* model, token* tkArr){
     assert(n > 0);
     model->verteces = NULL;
     model->faces = NULL;
+    size_t verteces_count = 0;
+    size_t faces_count = 0;
+    int scale_value = 0;
 
     for(size_t i = 0; i < n; i++){
         if (strncmp(tkArr[i].data.buffer, "v", 1) == 0
@@ -305,8 +310,41 @@ void getObjData(obj* model, token* tkArr){
             vertex.y = toFloat(tkArr[i+2].data.buffer, tkArr[i+2].data.count);
             vertex.z = toFloat(tkArr[i+3].data.buffer, tkArr[i+3].data.count);
             arrput(model->verteces, vertex);
+            verteces_count += 1;
+        }
+        else if (strncmp(tkArr[i].data.buffer, "s", 1) == 0 &&
+            strncmp(tkArr[i + 1].data.buffer, "off", 3) != 0){
+            scale_value = toInt(tkArr[i + 1].data.buffer, tkArr[i + 1].data.count);
+        }
+
+        else if (strncmp(tkArr[i].data.buffer, "f", 1) == 0
+         && tkArr[i].data.count == 1){
+            size_t j = i + 1;
+            int tempVec3i[3] = {0};
+
+            size_t temp_idx = 0;
+            while(tkArr[j].kind != TK_SYMBOL && j < n){
+                if(tkArr[j - 1].kind != TK_FORWARDSLASH &&
+                tkArr[j].kind == TK_NUMBER){
+                    tempVec3i[temp_idx] = toInt(tkArr[j].data.buffer, tkArr[j].data.count);
+                    assert(temp_idx < 3);   
+                    temp_idx++;
+                }
+                j++;
+            }
+            i = j - 1;
+            vec3i face = {0};
+            face.x = tempVec3i[0] - scale_value;
+            face.y = tempVec3i[1] - scale_value;
+            face.z = tempVec3i[2] - scale_value;
+            arrput(model->faces, face);
+            faces_count += 1;
+            temp_idx = 0;
         }
     }
+    fprintf(stdout, "[INFO] verteces count = %llu\n", verteces_count);
+    fprintf(stdout, "[INFO] scaler value = %d\n", scale_value);
+    fprintf(stdout, "[INFO] faces count = %llu\n", faces_count);
 }
 
 
