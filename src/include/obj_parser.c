@@ -37,7 +37,7 @@ int isNumSapratore(int c){
 }
 
 int isFloat(SV obj){
-    size_t i = 0;
+    int i = 0;
     int have_dot = 0;
     if (obj.buffer[0] == '-' || ((uint8_t)(obj.buffer[0]) > 47 && (uint8_t)(obj.buffer[0]) < 58)){
         while(obj.buffer[i] != ' ' && obj.buffer[i] != '\n' && obj.count >  i && obj.buffer[i] != '/'){
@@ -50,13 +50,13 @@ int isFloat(SV obj){
 }
 
 void sv_chop_left(SV* sv, size_t n){
-    if (n > sv->count) n = sv->count;
+    if ((int)(n) > sv->count) n = sv->count;
         sv->buffer += n;
         sv->count -= n;
 }
 
 SV sv_chop_by_delmit(SV *sv, const char delmit){
-    size_t i = 0;
+    int i = 0;
     while(i < sv->count && sv->buffer[i] != delmit){
         i++;
     }
@@ -78,7 +78,7 @@ SV sv_chop_by_delmit(SV *sv, const char delmit){
 
 
 SV sv_chop_by_type(SV *sv, int (*istype)(int c)){
-    size_t i = 0;
+    int i = 0;
     while(i < sv->count && !istype(sv->buffer[i])){
         i++;
     }
@@ -262,11 +262,11 @@ int toInt(char* strNum, size_t len){
     int i = (int)strtof(tempNum, &endptr);
 
     if(tempNum == endptr){
-        perror("No digits were found:");
+        perror("toInt: No digits were found:");
         assert(0);
     }
     else if(*endptr != '\0'){
-        perror("Farther char after number");
+        perror("toInt: Farther char after number");
         assert(0);
     }
     return i;
@@ -280,11 +280,11 @@ float toFloat(char* strNum, size_t len){
     float i = strtof(tempNum, &endptr);
 
     if(tempNum == endptr){
-        perror("No digits were found:");
+        perror("toFloat: No digits were found:");
         assert(0);
     }
     else if(*endptr != '\0'){
-        perror("Farther char after number");
+        perror("toFloat: Farther char after number");
         assert(0);
     }
     return i;
@@ -326,8 +326,9 @@ void getObjData(obj* model, token* tkArr){
             while(tkArr[j].kind != TK_SYMBOL && j < n){
                 if(tkArr[j - 1].kind != TK_FORWARDSLASH &&
                 tkArr[j].kind == TK_NUMBER){
+                    if (temp_idx > 3) continue; // TODO: we don't handle the w axis
                     tempVec3i[temp_idx] = toInt(tkArr[j].data.buffer, tkArr[j].data.count);
-                    assert(temp_idx < 3);   
+                    // assert(temp_idx < 3);
                     temp_idx++;
                 }
                 j++;
@@ -346,7 +347,4 @@ void getObjData(obj* model, token* tkArr){
     fprintf(stdout, "[INFO] scaler value = %d\n", scale_value);
     fprintf(stdout, "[INFO] faces count = %llu\n", faces_count);
 }
-
-
-
 
