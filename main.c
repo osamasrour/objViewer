@@ -5,7 +5,7 @@
 #undef main
 
 
-#define WINDOW_TITLE "ROTATING PANGER"
+#define WINDOW_TITLE "ROTATING OBJECT"
 #define WINDOW_WIDTH 650
 #define WINDOW_HEIGHT 650
 #define WHITE 0xfff0e9e9
