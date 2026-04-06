@@ -1,5 +1,12 @@
 *.exe
-src
+SDL2
+lib
+build
 panger.h
 ascii.c
-tokenz.txt
+*.txt
+test.c
+obj_build.bat
+*.pdf
+*.rar
+*.zip
