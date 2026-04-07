@@ -263,11 +263,11 @@ int toInt(char* strNum, size_t len){
 
     if(tempNum == endptr){
         fprintf(stderr, "toInt: No digits were found: `%s`\n", tempNum);
-        assert(0);
+        exit(-1);
     }
     else if(*endptr != '\0'){
         fprintf(stderr, "toInt: Farther char after number: `%s`\n", tempNum);
-        assert(0);
+        exit(-1);
     }
     return i;
 }
@@ -281,11 +281,11 @@ float toFloat(char* strNum, size_t len){
 
     if(tempNum == endptr){
         fprintf(stderr, "toFloat: No digits were found: `%s`\n", tempNum);
-        assert(0);
+        exit(-1);
     }
     else if(*endptr != '\0'){
         fprintf(stderr, "toFloat: Farther char after number: `%s`\n", tempNum);
-        assert(0);
+        exit(-1);
     }
     return i;
 }
@@ -313,7 +313,9 @@ void getObjData(obj* model, token* tkArr){
             verteces_count += 1;
         }
         else if (strncmp(tkArr[i].data.buffer, "s", 1) == 0 &&
+            tkArr[i].data.count == 1 &&
             strncmp(tkArr[i + 1].data.buffer, "off", 3) != 0){
+            assert(tkArr[i + 1].kind == TK_NUMBER);
             scale_value = toInt(tkArr[i + 1].data.buffer, tkArr[i + 1].data.count);
         }
 
@@ -327,8 +329,8 @@ void getObjData(obj* model, token* tkArr){
                 if(tkArr[j - 1].kind != TK_FORWARDSLASH &&
                 tkArr[j].kind == TK_NUMBER){
                     if (temp_idx > 3) continue; // TODO: we don't handle the w axis
+                    assert(tkArr[j].kind == TK_NUMBER);
                     tempVec3i[temp_idx] = toInt(tkArr[j].data.buffer, tkArr[j].data.count);
-                    // assert(temp_idx < 3);
                     temp_idx++;
                 }
                 j++;

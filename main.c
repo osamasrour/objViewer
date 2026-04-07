@@ -157,8 +157,8 @@ int main(void)
     // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger-no-hull.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\cyber\\cyber-penger.obj"; // Works
-    const char* file_path = "objTestFiles\\penger-obj-main\\real-penger\\real-penger.obj"; // Works
-    // const char* file_path = "objTestFiles\\penger-obj-main\\suitger\\suitedpenger.obj"; // TODO: gives Error while parsing
+    // const char* file_path = "objTestFiles\\penger-obj-main\\real-penger\\real-penger.obj"; // Works
+    const char* file_path = "objTestFiles\\penger-obj-main\\suitger\\suitedpenger.obj"; // Works
     long buffer_size;
     char* buffer;
     if (readFile(file_path, &buffer, &buffer_size) != 0){
