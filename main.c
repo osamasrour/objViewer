@@ -19,8 +19,6 @@
 #define GREEN_COMP(hex) (hex >> 8 & 0xff)
 #define BLUE_COMP(hex) (hex >> 0 & 0xff)
 #define ALFA(hex) (uint8_t)(hex >> 24 & 0xff)
-#define MIN(n1, n2) (n1 <= n2 ? n1 : n2)
-#define MAX(n1, n2) (n1 >= n2 ? n1 : n2)
 #define UNIMPLEMENTED(msg) {fprintf(stderr, msg); exit(1);}
 #define FPS 60
 #define PANGER_PAD 0.07
@@ -58,15 +56,6 @@ vec3f rotate_xz(vec3f vec, float angle){
     };
 }
 
-// TODO: this function is a temperory hack to help low the y axis in the object file,
-// Should be fixed.
-vec3f vec3f_add_y(vec3f vec, float n){
-    return (vec3f){
-        .x = vec.x,
-        .y = vec.y + n,
-        .z = vec.z
-    };
-}
 
 typedef struct Canvac{
     SDL_Rect rect;
@@ -165,10 +154,10 @@ uint32_t pix_buffer[WINDOW_WIDTH*WINDOW_HEIGHT];
 
 int main(void)
 {
-    // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger-no-hull.obj";
-    const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger.obj";
-    // const char* file_path = "objTestFiles\\penger-obj-main\\cyber\\cyber-penger.obj";
-    // const char* file_path = "objTestFiles\\penger-obj-main\\real-penger\\real-penger.obj";
+    // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger-no-hull.obj"; // Works
+    // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger.obj"; // Works
+    // const char* file_path = "objTestFiles\\penger-obj-main\\cyber\\cyber-penger.obj"; // Works
+    const char* file_path = "objTestFiles\\penger-obj-main\\real-penger\\real-penger.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\suitger\\suitedpenger.obj"; // TODO: gives Error while parsing
     long buffer_size;
     char* buffer;
@@ -225,12 +214,13 @@ int main(void)
         angle += M_PI*1/FPS;
 
         for(size_t j = 0; j < (arrlenu(model.faces)); j++){
-            vec2i a = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].x], -0.5), angle)));
-            vec2i b = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].y], -0.5), angle)));
-            vec2i c = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].z], -0.5), angle)));
-            // vec2i a = denormalize(project2d(rotate_xz(panger_points[panger_lines[j].x], angle)));
-            // vec2i b = denormalize(project2d(rotate_xz(panger_points[panger_lines[j].y], angle)));
-            // vec2i c = denormalize(project2d(rotate_xz(panger_points[panger_lines[j].z], angle)));
+            // vec2i a = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].x], -0.5), angle)));
+            // vec2i b = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].y], -0.5), angle)));
+            // vec2i c = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].z], -0.5), angle)));
+            vec2i a = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].x], angle)));
+            vec2i b = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].y], angle)));
+            vec2i c = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].z], angle)));
+
             CanvacDrawLine(screen, a, b , thickness, GREEN);
             CanvacDrawLine(screen, b, c , thickness, GREEN);
             CanvacDrawLine(screen, a, c , thickness, GREEN);

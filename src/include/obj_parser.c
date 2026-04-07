@@ -262,11 +262,11 @@ int toInt(char* strNum, size_t len){
     int i = (int)strtof(tempNum, &endptr);
 
     if(tempNum == endptr){
-        perror("toInt: No digits were found:");
+        fprintf(stderr, "toInt: No digits were found: `%s`\n", tempNum);
         assert(0);
     }
     else if(*endptr != '\0'){
-        perror("toInt: Farther char after number");
+        fprintf(stderr, "toInt: Farther char after number: `%s`\n", tempNum);
         assert(0);
     }
     return i;
@@ -280,11 +280,11 @@ float toFloat(char* strNum, size_t len){
     float i = strtof(tempNum, &endptr);
 
     if(tempNum == endptr){
-        perror("toFloat: No digits were found:");
+        fprintf(stderr, "toFloat: No digits were found: `%s`\n", tempNum);
         assert(0);
     }
     else if(*endptr != '\0'){
-        perror("toFloat: Farther char after number");
+        fprintf(stderr, "toFloat: Farther char after number: `%s`\n", tempNum);
         assert(0);
     }
     return i;
@@ -346,5 +346,19 @@ void getObjData(obj* model, token* tkArr){
     fprintf(stdout, "[INFO] verteces count = %llu\n", verteces_count);
     fprintf(stdout, "[INFO] scaler value = %d\n", scale_value);
     fprintf(stdout, "[INFO] faces count = %llu\n", faces_count);
+    
+    float normalizer_factor = 1.0f;
+    for(size_t i = 0; i < arrlenu(model->verteces); i++){
+        normalizer_factor = MAX(normalizer_factor, SDL_fabsf(model->verteces[i].x));
+        normalizer_factor = MAX(normalizer_factor, SDL_fabsf(model->verteces[i].y));
+        normalizer_factor = MAX(normalizer_factor, SDL_fabsf(model->verteces[i].z));
+    }
+    for (size_t i = 0; i < arrlenu(model->verteces); i++){
+        model->verteces[i].x = model->verteces[i].x / normalizer_factor;
+        model->verteces[i].y = (model->verteces[i].y / normalizer_factor) + PAD_Y_AXIS;
+        model->verteces[i].z = model->verteces[i].z / normalizer_factor;
+    }
+    fprintf(stdout, "[INFO] verteces normalized successfully = %f\n", normalizer_factor);
+
 }
 

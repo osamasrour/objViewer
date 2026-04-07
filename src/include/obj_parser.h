@@ -8,6 +8,10 @@
 #include <assert.h>
 #include <errno.h>
 #include "stb_ds.h"
+#include <SDL2/SDL_stdinc.h>
+#define MIN(n1, n2) (n1 <= n2 ? n1 : n2)
+#define MAX(n1, n2) (n1 >= n2 ? n1 : n2)
+#define PAD_Y_AXIS -0.5
 
 #define SV_fmt "%.*s"
 #define SV_arg(x) (x).count, (x).buffer
