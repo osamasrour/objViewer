@@ -328,7 +328,7 @@ void getObjData(obj* model, token* tkArr){
             while(tkArr[j].kind != TK_SYMBOL && j < n){
                 if(tkArr[j - 1].kind != TK_FORWARDSLASH &&
                 tkArr[j].kind == TK_NUMBER){
-                    if (temp_idx > 3) continue; // TODO: we don't handle the w axis
+                    if (temp_idx > 3) continue; // TODO(#2): we don't handle the w axis
                     assert(tkArr[j].kind == TK_NUMBER);
                     tempVec3i[temp_idx] = toInt(tkArr[j].data.buffer, tkArr[j].data.count);
                     temp_idx++;
@@ -337,9 +337,9 @@ void getObjData(obj* model, token* tkArr){
             }
             i = j - 1;
             vec3i face = {0};
-            face.x = tempVec3i[0] - scale_value;
-            face.y = tempVec3i[1] - scale_value;
-            face.z = tempVec3i[2] - scale_value;
+            face.x = tempVec3i[0] - 1; // the indces in .obj starts from 1
+            face.y = tempVec3i[1] - 1; // the indces in .obj starts from 1
+            face.z = tempVec3i[2] - 1; // the indces in .obj starts from 1
             arrput(model->faces, face);
             faces_count += 1;
             temp_idx = 0;
