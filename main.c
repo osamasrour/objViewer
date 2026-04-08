@@ -21,7 +21,6 @@
 #define ALFA(hex) (uint8_t)(hex >> 24 & 0xff)
 #define UNIMPLEMENTED(msg) {fprintf(stderr, msg); exit(1);}
 #define FPS 60
-#define PANGER_PAD 0.07
 
 
 vec2f normalize(vec2i vec){
@@ -39,7 +38,7 @@ vec2i denormalize(vec2f vec){
 }
 
 vec2f project2d(vec3f vec){
-    float z = (vec.z + 1); //+ PANGER_PAD;
+    float z = (vec.z + 1);
     return (vec2f){
         .x = vec.x / z,
         .y = vec.y / z
@@ -154,11 +153,14 @@ uint32_t pix_buffer[WINDOW_WIDTH*WINDOW_HEIGHT];
 
 int main(void)
 {
+    // TODO(#1): take the paths from the command line args.
     // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger-no-hull.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\cyber\\cyber-penger.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\real-penger\\real-penger.obj"; // Works
     const char* file_path = "objTestFiles\\penger-obj-main\\suitger\\suitedpenger.obj"; // Works
+    // const char* file_path = "objTestFiles\\tank1\\Panther_obj.obj"; // Not working
+    // const char* file_path = "objTestFiles\\tank2\\IS8.obj"; // Error: seg-fault
     long buffer_size;
     char* buffer;
     if (readFile(file_path, &buffer, &buffer_size) != 0){
@@ -214,9 +216,6 @@ int main(void)
         angle += M_PI*1/FPS;
 
         for(size_t j = 0; j < (arrlenu(model.faces)); j++){
-            // vec2i a = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].x], -0.5), angle)));
-            // vec2i b = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].y], -0.5), angle)));
-            // vec2i c = denormalize(project2d(rotate_xz(vec3f_add_y(model.verteces[model.faces[j].z], -0.5), angle)));
             vec2i a = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].x], angle)));
             vec2i b = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].y], angle)));
             vec2i c = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].z], angle)));
