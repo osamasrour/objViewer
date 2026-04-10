@@ -159,7 +159,7 @@ int main(void)
     // const char* file_path = "objTestFiles\\penger-obj-main\\cyber\\cyber-penger.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\real-penger\\real-penger.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\suitger\\suitedpenger.obj"; // Works
-    // TODO: it seg-fault with tank files
+    // TODO(#3): it seg-fault with tank files
     // it seg-fault in 'SDL_PollEvent()' only in linking with dynamic sdl2
     // more likelythe prrolem in static virsion or in 'CanvacDrawLine()'
     const char* file_path = "objTestFiles\\tank1\\Panther_obj.obj"; // Error: seg-fault
