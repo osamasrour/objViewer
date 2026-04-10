@@ -297,9 +297,10 @@ void getObjData(obj* model, token* tkArr){
     model->faces = NULL;
     size_t verteces_count = 0;
     size_t faces_count = 0;
-    int scale_value = 0;
+    // int scale_value = 0;
 
     for(size_t i = 0; i < n; i++){
+        
         if (strncmp(tkArr[i].data.buffer, "v", 1) == 0
          && tkArr[i].data.count == 1){
             vec3f vertex = {0};
@@ -312,12 +313,12 @@ void getObjData(obj* model, token* tkArr){
             arrput(model->verteces, vertex);
             verteces_count += 1;
         }
-        else if (strncmp(tkArr[i].data.buffer, "s", 1) == 0 &&
-            tkArr[i].data.count == 1 &&
-            strncmp(tkArr[i + 1].data.buffer, "off", 3) != 0){
-            assert(tkArr[i + 1].kind == TK_NUMBER);
-            scale_value = toInt(tkArr[i + 1].data.buffer, tkArr[i + 1].data.count);
-        }
+        // else if (strncmp(tkArr[i].data.buffer, "s", 1) == 0 &&
+        //     tkArr[i].data.count == 1 &&
+        //     strncmp(tkArr[i + 1].data.buffer, "off", 3) != 0){
+        //     assert(tkArr[i + 1].kind == TK_NUMBER);
+        //     scale_value = toInt(tkArr[i + 1].data.buffer, tkArr[i + 1].data.count);
+        // }
 
         else if (strncmp(tkArr[i].data.buffer, "f", 1) == 0
          && tkArr[i].data.count == 1){
@@ -328,7 +329,10 @@ void getObjData(obj* model, token* tkArr){
             while(tkArr[j].kind != TK_SYMBOL && j < n){
                 if(tkArr[j - 1].kind != TK_FORWARDSLASH &&
                 tkArr[j].kind == TK_NUMBER){
-                    if (temp_idx > 3) continue; // TODO(#2): we don't handle the w axis
+                    if (temp_idx > 3) { // TODO(#2): we don't handle the w axis
+                        j++;
+                        continue;
+                    }
                     assert(tkArr[j].kind == TK_NUMBER);
                     tempVec3i[temp_idx] = toInt(tkArr[j].data.buffer, tkArr[j].data.count);
                     temp_idx++;
@@ -346,7 +350,7 @@ void getObjData(obj* model, token* tkArr){
         }
     }
     fprintf(stdout, "[INFO] verteces count = %llu\n", verteces_count);
-    fprintf(stdout, "[INFO] scaler value = %d\n", scale_value);
+    // fprintf(stdout, "[INFO] scaler value = %d\n", scale_value);
     fprintf(stdout, "[INFO] faces count = %llu\n", faces_count);
     
     float normalizer_factor = 1.0f;
@@ -358,7 +362,7 @@ void getObjData(obj* model, token* tkArr){
     for (size_t i = 0; i < arrlenu(model->verteces); i++){
         model->verteces[i].x = model->verteces[i].x / normalizer_factor;
         model->verteces[i].y = (model->verteces[i].y / normalizer_factor) + PAD_Y_AXIS;
-        model->verteces[i].z = model->verteces[i].z / normalizer_factor;
+        model->verteces[i].z = (model->verteces[i].z / normalizer_factor);
     }
     fprintf(stdout, "[INFO] verteces normalized successfully = %f\n", normalizer_factor);
 

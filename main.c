@@ -158,13 +158,16 @@ int main(void)
     // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\cyber\\cyber-penger.obj"; // Works
     // const char* file_path = "objTestFiles\\penger-obj-main\\real-penger\\real-penger.obj"; // Works
-    const char* file_path = "objTestFiles\\penger-obj-main\\suitger\\suitedpenger.obj"; // Works
-    // const char* file_path = "objTestFiles\\tank1\\Panther_obj.obj"; // Not working
+    // const char* file_path = "objTestFiles\\penger-obj-main\\suitger\\suitedpenger.obj"; // Works
+    // TODO: it seg-fault with tank files
+    // it seg-fault in 'SDL_PollEvent()' only in linking with dynamic sdl2
+    // more likelythe prrolem in static virsion or in 'CanvacDrawLine()'
+    const char* file_path = "objTestFiles\\tank1\\Panther_obj.obj"; // Error: seg-fault
     // const char* file_path = "objTestFiles\\tank2\\IS8.obj"; // Error: seg-fault
     long buffer_size;
     char* buffer;
     if (readFile(file_path, &buffer, &buffer_size) != 0){
-        fprintf(stderr,"ERORR: readFile => %s", strerror(errno));
+        fprintf(stderr,"ERORR: readFile => %s: %s", strerror(errno), file_path);
         return -1;
     }
     
@@ -173,10 +176,9 @@ int main(void)
 
     token *tkArr = NULL;
     parse_obj(obj_sv, &tkArr);
-
     obj model = {0};
     getObjData(&model, tkArr);
-
+    
     free(obj_sv.buffer);
     obj_sv.count = 0;
 
@@ -206,18 +208,21 @@ int main(void)
     void *sheet_texture_pixels;
 
     int quit = 0;
-    SDL_Event event;
+    SDL_Event event = {0};
 
     double angle = 0;
     int thickness = 2;
     while(!quit){
-        SDL_SetRenderDrawColor(renderer, RED_COMP(WHITE), GREEN_COMP(WHITE), BLUE_COMP(WHITE), ALFA(WHITE));
-        SDL_RenderClear(renderer);
+        // Clean up the buffer
+        memset(pix_buffer, 0, sizeof(pix_buffer));
         angle += M_PI*1/FPS;
 
         for(size_t j = 0; j < (arrlenu(model.faces)); j++){
+            assert(model.faces[j].x < arrlen(model.verteces));
             vec2i a = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].x], angle)));
+            assert(model.faces[j].y < arrlen(model.verteces));
             vec2i b = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].y], angle)));
+            assert(model.faces[j].z < arrlen(model.verteces));
             vec2i c = denormalize(project2d(rotate_xz(model.verteces[model.faces[j].z], angle)));
 
             CanvacDrawLine(screen, a, b , thickness, GREEN);
@@ -238,26 +243,27 @@ int main(void)
 
 
         // event Handler
-        SDL_PollEvent(&event);
-        switch(event.type){
-            case SDL_QUIT:
-            quit = 1;
-            break;
-            case SDL_KEYDOWN:
-            switch(event.key.keysym.scancode){
-                case SDL_SCANCODE_ESCAPE:
+        while(SDL_PollEvent(&event) != 0){
+            switch(event.type){
+                case SDL_QUIT:
                 quit = 1;
+                break;
+                case SDL_KEYDOWN:
+                switch(event.key.keysym.scancode){
+                    case SDL_SCANCODE_ESCAPE:
+                    quit = 1;
+                    break;
+                    default:
+                    break;
+                }
                 break;
                 default:
                 break;
             }
-            break;
-            default:
-            break;
         }
 
+
         SDL_RenderPresent(renderer);
-        memset(pix_buffer, 0, sizeof(pix_buffer));
     }
 
 
