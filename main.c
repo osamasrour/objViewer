@@ -150,6 +150,10 @@ void CanvacDrawRect(Canvac canv, int rx, int ry, int32_t rw, int32_t rh, int32_t
 }
 
 uint32_t pix_buffer[WINDOW_WIDTH*WINDOW_HEIGHT];
+// NOTE: this is a hack to sprite the buffer away from the event, to not seg-fault
+// because the canvas functions make buffer overflow
+uint32_t pad[1024]; 
+SDL_Event event = {0};
 
 int main(void)
 {
@@ -162,8 +166,8 @@ int main(void)
     // TODO(#3): it seg-fault with tank files
     // it seg-fault in 'SDL_PollEvent()' only in linking with dynamic sdl2
     // more likelythe prrolem in static virsion or in 'CanvacDrawLine()'
-    const char* file_path = "objTestFiles\\tank1\\Panther_obj.obj"; // Error: seg-fault
-    // const char* file_path = "objTestFiles\\tank2\\IS8.obj"; // Error: seg-fault
+    // const char* file_path = "objTestFiles\\tank1\\Panther_obj.obj"; // Error: seg-fault
+    const char* file_path = "objTestFiles\\tank2\\IS8.obj"; // Error: seg-fault
     long buffer_size;
     char* buffer;
     if (readFile(file_path, &buffer, &buffer_size) != 0){
@@ -208,7 +212,7 @@ int main(void)
     void *sheet_texture_pixels;
 
     int quit = 0;
-    SDL_Event event = {0};
+    
 
     double angle = 0;
     int thickness = 2;
