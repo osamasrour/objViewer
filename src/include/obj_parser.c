@@ -329,7 +329,7 @@ void getObjData(obj* model, token* tkArr){
             while(tkArr[j].kind != TK_SYMBOL && j < n){
                 if(tkArr[j - 1].kind != TK_FORWARDSLASH &&
                 tkArr[j].kind == TK_NUMBER){
-                    if (temp_idx > 3) { // TODO(#2): we don't handle the w axis
+                    if (temp_idx > 3) {
                         j++;
                         continue;
                     }
