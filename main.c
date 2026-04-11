@@ -5,7 +5,6 @@
 #undef main
 
 
-#define WINDOW_TITLE "ROTATING OBJECT"
 #define WINDOW_WIDTH 650
 #define WINDOW_HEIGHT 650
 #define WHITE 0xfff0e9e9
@@ -84,8 +83,8 @@ void CanvacDrawLine(Canvac canv, vec2i vec1, vec2i vec2 , uint8_t thickness, uin
 
     if (minx < canv.rect.x || 
         miny < canv.rect.y || 
-        maxx > canv.rect.w + canv.rect.x || 
-        maxy > canv.rect.h + canv.rect.y) 
+        maxx >= canv.rect.w + canv.rect.x || 
+        maxy >= canv.rect.h + canv.rect.y) 
         { return;}
 
         double ExpectedArea = (double)SDL_sqrt(SDL_pow(maxx - minx, 2) + SDL_pow(maxy - miny, 2)) * 0.5f * thickness * 0.5f;
@@ -150,24 +149,32 @@ void CanvacDrawRect(Canvac canv, int rx, int ry, int32_t rw, int32_t rh, int32_t
 }
 
 uint32_t pix_buffer[WINDOW_WIDTH*WINDOW_HEIGHT];
-// NOTE: this is a hack to sprite the buffer away from the event, to not seg-fault
-// because the canvas functions make buffer overflow
-uint32_t pad[1024]; 
-SDL_Event event = {0};
 
-int main(void)
-{
-    // TODO(#1): take the paths from the command line args.
-    // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger-no-hull.obj"; // Works
-    // const char* file_path = "objTestFiles\\penger-obj-main\\penger\\penger.obj"; // Works
-    // const char* file_path = "objTestFiles\\penger-obj-main\\cyber\\cyber-penger.obj"; // Works
-    // const char* file_path = "objTestFiles\\penger-obj-main\\real-penger\\real-penger.obj"; // Works
-    // const char* file_path = "objTestFiles\\penger-obj-main\\suitger\\suitedpenger.obj"; // Works
-    // TODO(#3): it seg-fault with tank files
-    // it seg-fault in 'SDL_PollEvent()' only in linking with dynamic sdl2
-    // more likelythe prrolem in static virsion or in 'CanvacDrawLine()'
-    // const char* file_path = "objTestFiles\\tank1\\Panther_obj.obj"; // Error: seg-fault
-    const char* file_path = "objTestFiles\\tank2\\IS8.obj"; // Error: seg-fault
+int main(int argc, char* argv[]){
+
+    if (argc < 2){
+        fprintf(stderr, "[USAGE]: %s <model.obj>\n", argv[0]);
+        return -1;
+    }
+
+    const char* file_path = argv[1];
+    int valid_obj = 0;
+    size_t file_path_len = SDL_strlen(file_path);
+    for(int i = file_path_len - 1; i > 0; i--){
+        if (file_path[i] == '.' && SDL_strcmp(file_path+i, ".obj") == 0){
+            valid_obj = 1;
+            break;
+        }
+    }
+
+    if (!valid_obj){
+        fprintf(stderr, "[ERROR] Unvalid file path: <%s>\n", file_path);
+        fprintf(stderr, "\tonly support <obj> files\n");
+        return -1;
+    }
+
+
+
     long buffer_size;
     char* buffer;
     if (readFile(file_path, &buffer, &buffer_size) != 0){
@@ -186,12 +193,23 @@ int main(void)
     free(obj_sv.buffer);
     obj_sv.count = 0;
 
+#define MAX_FILE_NAME 256
+    char window_title[MAX_FILE_NAME] = {0};
+
+    for (size_t i = file_path_len - 1; i > 0; i--){
+        if ((file_path[i] == '\\' || file_path[i] == '/') && file_path[i + 1] != '\0'){
+            file_path += i + 1;
+            break;
+        }
+    }
+    SDL_snprintf(window_title, MAX_FILE_NAME, "OBJ Viewer <%s>", file_path);
+
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         fprintf(stderr, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
-
-    SDL_Window *window = SDL_CreateWindow(WINDOW_TITLE,SDL_WINDOWPOS_UNDEFINED, 
+    SDL_Window *window = SDL_CreateWindow(window_title ,SDL_WINDOWPOS_UNDEFINED, 
         SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 
     assert(window != NULL);
@@ -245,7 +263,7 @@ int main(void)
         }
         SDL_RenderCopy(renderer, screen_texture, NULL, &((SDL_Rect){screen.rect.x, screen.rect.y, screen.rect.w, screen.rect.h}));
 
-
+        SDL_Event event = {0};
         // event Handler
         while(SDL_PollEvent(&event) != 0){
             switch(event.type){
